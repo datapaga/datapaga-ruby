@@ -33,6 +33,7 @@ module DataPaga
       end
 
       def list(params)
+        #this needs refactoring
         url = "https://datapaga.herokuapp.com/v1/transaction_history"
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host)
@@ -55,6 +56,29 @@ module DataPaga
 
         response.body
 
+      end
+
+      def detail(params)
+        url = "https://datapaga.herokuapp.com/v1/transaction_history/"+"#{params[:id]}"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        list = '
+          {
+            "account_movement": {
+              "api_key": "'+"#{@api_key}"+'",
+              "api_secret": "'+"#{@api_secret}"+'"
+            }
+          }'
+
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = list
+
+        response = http.request(request)
+
+        response.body
       end
 
     private
