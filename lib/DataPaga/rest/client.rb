@@ -62,7 +62,7 @@ module DataPaga
         url = "https://datapaga.herokuapp.com/v1/transaction_history/"+"#{params[:id]}"
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host)
-        list = '
+        detail = '
           {
             "account_movement": {
               "api_key": "'+"#{@api_key}"+'",
@@ -74,7 +74,48 @@ module DataPaga
           uri, 
           'Content-Type' => 'application/json'
         )
-        request.body = list
+        request.body = detail
+
+        response = http.request(request)
+
+        response.body
+      end
+
+      def charge(params)
+        url = "https://datapaga.herokuapp.com/v1/account_movements"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        charge = '
+          {
+            "account_movement": {
+              "api_key": "'+"#{@api_key}"+'",
+              "api_secret": "'+"#{@api_secret}"+'",
+              "first_name": "'+"#{params[:first_name]}"+'",
+              "last_name": "'+"#{params[:last_name]}"+'",
+              "web_site_url": "'+"#{params[:return_url]}"+'",
+              "phone": "'+"#{params[:phone]}"+'",
+              "country": "'+"#{params[:country_code]}"+'",
+              "city": "'+"#{params[:city]}"+'",
+              "email": "'+"#{params[:email]}"+'",
+              "customer_ip": "'+"#{params[:customer_ip]}"+'",
+              "region": "'+"#{params[:region]}"+'",
+              "zip": "'+"#{params[:zip_code]}"+'",
+              "street": "'+"#{params[:address]}"+'",
+              "total_amount": "'+"#{params[:total_amount]}"+'",
+              "product_description": "'+"#{params[:product_description]}"+'",
+              "card_holder_name": "'+"#{params[:card_holder_name]}"+'",
+              "card_number": "'+"#{params[:card_number]}"+'",
+              "card_expire_month": "'+"#{params[:card_expire_month]}"+'",
+              "card_expire_year": "'+"#{params[:card_expire_year]}"+'",
+              "card_type": "'+"#{params[:card_type]}"+'",
+              "card_security_code": "'+"#{params[:ccv]}"+'"}
+            }'
+
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = charge
 
         response = http.request(request)
 
