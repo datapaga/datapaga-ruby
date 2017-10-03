@@ -32,25 +32,29 @@ module DataPaga
         credentials.values.none? { |v| blank?(v) }
       end
 
-      def list(params)
-        #this needs refactoring
+      def list(params = {})        
+
+        options = {"account_movement" => ""}
+        options["account_movement"] = params.merge(credentials)
+
+
         url = "https://datapaga.herokuapp.com/v1/transaction_history"
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host)
-        list = '
-          {
-            "account_movement": {
-              "api_key": "'+"#{@api_key}"+'",
-              "api_secret": "'+"#{@api_secret}"+'",
-              "start_date": "'+"#{params[:start_date]}"+'",
-              "end_date": "'+"#{params[:end_date]}"+'"}
-            }'
+        # list = '
+        #   {
+        #     "account_movement": {
+        #       "api_key": "'+"#{@api_key}"+'",
+        #       "api_secret": "'+"#{@api_secret}"+'",
+        #       "start_date": "'+"#{params[:start_date]}"+'",
+        #       "end_date": "'+"#{params[:end_date]}"+'"}
+        #     }'
 
         request = Net::HTTP::Post.new(
           uri, 
           'Content-Type' => 'application/json'
         )
-        request.body = list
+        request.body = options.to_json
 
         response = http.request(request)
 
