@@ -41,15 +41,6 @@ module DataPaga
         url = "https://datapaga.herokuapp.com/v1/transaction_history"
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host)
-        # list = '
-        #   {
-        #     "account_movement": {
-        #       "api_key": "'+"#{@api_key}"+'",
-        #       "api_secret": "'+"#{@api_secret}"+'",
-        #       "start_date": "'+"#{params[:start_date]}"+'",
-        #       "end_date": "'+"#{params[:end_date]}"+'"}
-        #     }'
-
         request = Net::HTTP::Post.new(
           uri, 
           'Content-Type' => 'application/json'
@@ -124,6 +115,69 @@ module DataPaga
         response = http.request(request)
 
         response.body
+      end
+
+      def cards(params = {})        
+
+        options = {"card" => ""}
+        options["card"] = params.merge(credentials)
+
+
+        url = "https://datapaga-staging.herokuapp.com/v1/cards/list?page=1"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = options.to_json
+
+        response = http.request(request)
+
+        response.body
+
+      end
+
+      def card_detail(params = {})        
+
+        options = {"card" => ""}
+        options["card"] = params.merge(credentials)
+
+
+        url = "https://datapaga-staging.herokuapp.com/v1/cards/detail/"+"#{params[:uuid]}"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = options.to_json
+
+        response = http.request(request)
+
+        response.body
+
+      end
+
+      def store_balance(params = {})     
+
+        options = {"store" => ""}
+        options["store"] = params.merge(credentials)
+
+
+        url = "https://datapaga-staging.herokuapp.com/v1/stores/balance"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = options.to_json
+
+        response = http.request(request)
+
+        response.body
+
       end
 
     private

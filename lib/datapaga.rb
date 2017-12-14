@@ -1,3 +1,5 @@
 require 'httparty'
 require 'DataPaga/rest/client'
+require 'DataPaga/rest/ams'
+require 'DataPaga/rest/cards'
 require 'json'
