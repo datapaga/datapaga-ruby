@@ -180,6 +180,27 @@ module DataPaga
 
       end
 
+      def refund(params = {})     
+
+        options = {"refund" => ""}
+        options["refund"] = params.merge(credentials)
+
+
+        url = "https://datapaga-staging.herokuapp.com/v1/account_movements/refund/"+"#{params[:uuid]}"
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host)
+        request = Net::HTTP::Post.new(
+          uri, 
+          'Content-Type' => 'application/json'
+        )
+        request.body = options.to_json
+
+        response = http.request(request)
+
+        response.body
+
+      end #am_601cc7c412d33457 DP2017092003437399
+
     private
 
       def blank?(s)
