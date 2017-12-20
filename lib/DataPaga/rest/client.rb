@@ -1,8 +1,11 @@
-require 'net/http'
-require 'uri'
+require 'DataPaga/charges'
+require 'DataPaga/cards'
+
 module DataPaga
   module Rest
     class Client
+      include DataPaga::Charges
+      include DataPaga::Cards
 
       attr_accessor :api_key, :api_secret#, :consumer_key, :consumer_secret, :proxy, :timeouts
       attr_writer :user_agent
@@ -30,50 +33,6 @@ module DataPaga
       # @return [Boolean]
       def credentials?
         credentials.values.none? { |v| blank?(v) }
-      end
-
-      def list(params = {})        
-
-        options = {"account_movement" => ""}
-        options["account_movement"] = params.merge(credentials)
-
-
-        url = "https://datapaga.herokuapp.com/v1/transaction_history"
-        uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host)
-        request = Net::HTTP::Post.new(
-          uri, 
-          'Content-Type' => 'application/json'
-        )
-        request.body = options.to_json
-
-        response = http.request(request)
-
-        response.body
-
-      end
-
-      def detail(params)
-        url = "https://datapaga.herokuapp.com/v1/transaction_history/"+"#{params[:id]}"
-        uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host)
-        detail = '
-          {
-            "account_movement": {
-              "api_key": "'+"#{@api_key}"+'",
-              "api_secret": "'+"#{@api_secret}"+'"
-            }
-          }'
-
-        request = Net::HTTP::Post.new(
-          uri, 
-          'Content-Type' => 'application/json'
-        )
-        request.body = detail
-
-        response = http.request(request)
-
-        response.body
       end
 
       def charge(params)
@@ -115,48 +74,6 @@ module DataPaga
         response = http.request(request)
 
         response.body
-      end
-
-      def cards(params = {})        
-
-        options = {"card" => ""}
-        options["card"] = params.merge(credentials)
-
-
-        url = "https://datapaga-staging.herokuapp.com/v1/cards/list?page=1"
-        uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host)
-        request = Net::HTTP::Post.new(
-          uri, 
-          'Content-Type' => 'application/json'
-        )
-        request.body = options.to_json
-
-        response = http.request(request)
-
-        response.body
-
-      end
-
-      def card_detail(params = {})        
-
-        options = {"card" => ""}
-        options["card"] = params.merge(credentials)
-
-
-        url = "https://datapaga-staging.herokuapp.com/v1/cards/detail/"+"#{params[:uuid]}"
-        uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host)
-        request = Net::HTTP::Post.new(
-          uri, 
-          'Content-Type' => 'application/json'
-        )
-        request.body = options.to_json
-
-        response = http.request(request)
-
-        response.body
-
       end
 
       def store_balance(params = {})     
