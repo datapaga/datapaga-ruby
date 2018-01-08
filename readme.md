@@ -6,7 +6,7 @@
 
 # DataPaga Ruby gem
 
-Ruby gem for DataPaaga Payments platform
+Ruby gem for DataPaga Payments platform
 
 ### Installing
 
